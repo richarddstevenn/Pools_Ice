@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
-import Image from "next/image";
 
 const reviews = [
   {
@@ -100,7 +99,7 @@ export function GoogleReviews() {
             
             {/* Review Text */}
             <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed flex-1">
-              "{review.text}"
+              &quot;{review.text}&quot;
             </p>
             
             <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800/50 flex items-center justify-between">

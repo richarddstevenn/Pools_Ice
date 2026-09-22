@@ -2,12 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { ArrowUpRight, Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 const navLinks = [
   { name: "Beranda", href: "#" },
@@ -20,18 +17,35 @@ const navLinks = [
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("#");
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
+
+      const sections = navLinks.filter((link) => link.href !== "#");
+      const isAtPageBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 80;
+      const currentSection = isAtPageBottom
+        ? navLinks.find((link) => link.href === "#contact") ?? navLinks[0]
+        : sections.reduce((activeLink, link) => {
+            const section = document.querySelector(link.href);
+            if (section && window.scrollY + 160 >= (section as HTMLElement).offsetTop) {
+              return link;
+            }
+            return activeLink;
+          }, navLinks[0]);
+
+      setActiveSection(currentSection.href);
     };
     window.addEventListener("scroll", handleScroll);
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleScrollTo = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
+    setActiveSection(targetId);
     if (targetId === "#") {
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
@@ -47,16 +61,16 @@ export function Navbar() {
       <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
         isScrolled
-          ? "bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200 dark:border-white/10 py-3 shadow-md dark:shadow-[0_4px_30px_rgba(0,0,0,0.1)]"
-          : "bg-transparent py-6 border-b border-transparent"
+          ? "bg-[#1b211e]/95 backdrop-blur-xl border-b border-white/10 py-3 shadow-xl"
+          : "bg-transparent py-5 border-b border-transparent"
       }`}
     >
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
         {/* Logo - Left */}
         <div className="flex-1 shrink-0">
           <Link href="/" className="flex items-center gap-2 group w-max">
-            <div className="relative h-16 w-48 md:h-24 md:w-64 hover:scale-105 transition-transform duration-300 md:-ml-2">
-              <Image src="/logo-clear.png" alt="Pools Ice Logo" fill className="object-contain object-left dark:brightness-0 dark:invert" sizes="(max-width: 768px) 192px, 256px" priority />
+            <div className="relative h-12 w-36 md:h-14 md:w-44 hover:scale-105 transition-transform duration-300">
+              <Image src="/logo-clear.png" alt="Pools Ice Logo" fill className="object-contain object-left brightness-0 invert" sizes="(max-width: 768px) 144px, 176px" priority />
             </div>
           </Link>
         </div>
@@ -68,7 +82,7 @@ export function Navbar() {
               key={link.name}
               href={link.href}
               onClick={(e) => handleScrollTo(e, link.href)}
-              className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors cursor-pointer whitespace-nowrap"
+              className={`text-[11px] uppercase tracking-[0.16em] font-semibold transition-colors cursor-pointer whitespace-nowrap ${activeSection === link.href ? "text-[#8bd7ff]" : "text-white hover:text-[#8bd7ff]"}`}
             >
               {link.name}
             </a>
@@ -77,21 +91,13 @@ export function Navbar() {
 
         {/* Actions - Right */}
         <div className="hidden lg:flex flex-1 shrink-0 justify-end items-center gap-4">
-          <ThemeToggle />
-          {/* <Link 
-            href="https://wa.me/6287816777741?text=Halo%20Pools%20Ice,%20saya%20ingin%20order%20es" 
-            target="_blank"
-            className="rounded-full font-semibold px-6 py-2.5 bg-cyan-500 text-white hover:bg-cyan-600 dark:text-slate-950 dark:hover:bg-cyan-400 hover:scale-105 hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all duration-300 whitespace-nowrap"
-          >
-            Order Sekarang
-          </Link> */}
+          <Link href="https://wa.me/6287816777741?text=Halo%20Pools%20Ice,%20saya%20ingin%20order%20es" target="_blank" className="inline-flex items-center gap-2 rounded-full bg-[#8bd7ff] text-[#14202a] px-4 py-2 text-xs font-bold uppercase tracking-wider hover:bg-white transition-colors">Order <ArrowUpRight className="h-4 w-4" /></Link>
         </div>
 
         {/* Mobile Menu Toggle & Theme */}
         <div className="flex lg:hidden items-center gap-4">
-          <ThemeToggle />
           <button
-            className="text-slate-800 dark:text-slate-200 p-2 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+            className="text-white p-2 hover:text-[#c8f169] transition-colors"
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Open menu"
           >
@@ -109,15 +115,15 @@ export function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-white dark:bg-slate-950 px-6 py-6 flex flex-col"
+            className="fixed inset-0 z-50 flex flex-col bg-[#1b211e] px-6 py-6"
           >
             <div className="flex justify-between items-center mb-10">
-              <Link href="/" className="block relative h-16 w-48 md:h-24 md:w-64" onClick={() => setMobileMenuOpen(false)}>
-                <Image src="/logo-clear.png" alt="Pools Ice Logo" fill className="object-contain object-left dark:brightness-0 dark:invert" sizes="(max-width: 768px) 192px, 256px" priority />
+              <Link href="/" className="block relative h-14 w-44" onClick={() => setMobileMenuOpen(false)}>
+                <Image src="/logo-clear.png" alt="Pools Ice Logo" fill className="object-contain object-left brightness-0 invert" sizes="176px" priority />
               </Link>
               <button
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-2 text-slate-600 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors"
+                className="p-2 text-white/70 transition-colors hover:text-[#8bd7ff]"
                 aria-label="Close menu"
               >
                 <X className="h-8 w-8 md:h-10 md:w-10" />
@@ -132,7 +138,7 @@ export function Navbar() {
                   transition={{ delay: idx * 0.1 }}
                   key={link.name}
                   href={link.href}
-                  className="text-2xl md:text-4xl font-medium text-slate-800 dark:text-slate-200 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors cursor-pointer"
+                  className={`text-3xl md:text-5xl font-heading font-medium transition-colors cursor-pointer ${activeSection === link.href ? "text-[#8bd7ff]" : "text-white hover:text-[#8bd7ff]"}`}
                   onClick={(e) => handleScrollTo(e, link.href)}
                 >
                   {link.name}
