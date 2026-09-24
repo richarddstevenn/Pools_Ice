@@ -137,9 +137,57 @@
 
 @layer components {
   .section-kicker {
-    @apply text-[10px] font-bold uppercase tracking-[0.24em] text-[#347fa7];
+    @apply hidden;
+  }
+
+  /* Reuse each step icon as the timeline marker instead of showing it twice. */
+  main > div > section:nth-child(4) span[class*="absolute"] {
+    color: transparent !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+  }
+
+  main > div > section:nth-child(4) span[class*="absolute"] + div svg {
+    position: absolute;
+    left: -34px !important;
+    top: 8px;
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  @media (min-width: 640px) and (max-width: 767px) {
+    main > div > section:nth-child(4) span[class*="absolute"] + div svg {
+      left: -42px !important;
+    }
+  }
+
+  @media (min-width: 768px) {
+    main > div > section:nth-child(4) span[class*="absolute"] + div svg {
+      left: -53px !important;
+      top: 0;
+      width: 18px !important;
+      height: 18px !important;
+    }
+  }
+
+  @media (min-width: 768px) and (max-width: 1023px) {
+    main > div > section:nth-child(4) span[class*="absolute"] + div svg {
+      left: -52.8px !important;
+    }
   }
 }
+  @media (max-width: 767px) {
+    main > div > section:nth-child(4) > div > div > div:nth-child(2) > div:first-child {
+      left: 3px !important;
+      bottom: 144px !important;
+    }
+  }
+
+  @media (min-width: 768px) {
+    main > div > section:nth-child(4) > div > div > div:nth-child(2) > div:first-child {
+      bottom: 150px !important;
+    }
+  }
 
 /* Keep legacy page utility colors aligned with the ice-blue palette. */
 [class*="text-[#c8f169]"] { color: #8bd7ff !important; }
@@ -151,7 +199,38 @@
 [class*="border-[#9fb18a]"] { border-color: #8fb6ca !important; }
 [class*="border-[#a9bba0]"] { border-color: #9dc0d1 !important; }
 
-/* Keep the page sections on one calm, hospitality-led canvas. */
-section.bg-\[\#f2f0e9\] { background-color: #f8f8f4 !important; }
-section#products { background-color: #edf5f8 !important; }
-section#delivery { background-color: #e4f0f4 !important; }
+/* Keep each section connected through a gradual ice-to-green color flow. */
+main > div > section:nth-child(1) {
+  background-color: #25312d !important;
+  background-image: linear-gradient(180deg, #1b211e 0%, #25312d 100%) !important;
+}
+
+main > div > section:nth-child(2) {
+  background-color: #f8f8f4 !important;
+  background-image: linear-gradient(180deg in oklab, #25312d 0%, #f8f8f4 44%, #f8f8f4 100%) !important;
+}
+
+main > div > section:nth-child(3) {
+  background-color: #edf5f8 !important;
+  background-image: linear-gradient(180deg, #f8f8f4 0%, #edf5f8 18%, #edf5f8 100%) !important;
+}
+
+main > div > section:nth-child(4) {
+  background-color: #dcecf4 !important;
+  background-image: linear-gradient(180deg in oklab, #edf5f8 0%, #dcecf4 44%, #dcecf4 100%) !important;
+}
+
+main > div > section:nth-child(5) {
+  background-color: #f8f8f4 !important;
+  background-image: linear-gradient(180deg in oklab, #dcecf4 0%, #f8f8f4 44%, #f8f8f4 100%) !important;
+}
+
+main > div > section:nth-child(6) {
+  background-color: #e4f0f4 !important;
+  background-image: linear-gradient(180deg, #f8f8f4 0%, #e4f0f4 18%, #e4f0f4 100%) !important;
+}
+
+main > div > section:nth-child(7) {
+  background-color: #f8f8f4 !important;
+  background-image: linear-gradient(180deg, #e4f0f4 0%, #f8f8f4 18%, #f8f8f4 100%) !important;
+}
